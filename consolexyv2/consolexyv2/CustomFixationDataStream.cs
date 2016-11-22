@@ -8,6 +8,7 @@ using Tobii.EyeX.Framework;
 using Tobii.EyeX.Client;
 using System.Threading;
 using EyeXFramework.Forms;
+using System.IO;
 
 /*
  *  Class: CustomFixationDataStream
@@ -20,6 +21,24 @@ using EyeXFramework.Forms;
 
 namespace GazeToolBar
 {
+
+
+    /// <summary>
+    /// Struct GazePoint custom coordinate representation.
+    /// </summary>
+    public struct GazePoint
+    {
+        public double x;
+        public double y;
+
+        public GazePoint(double X, double Y)
+        {
+            x = X;
+            y = Y;
+        }
+    }
+
+
     /// <summary>
     /// 
     /// </summary>
@@ -50,10 +69,13 @@ namespace GazeToolBar
         public delegate void CustomFixationEventHandler(object o, CustomFixationEventArgs e);
         public event CustomFixationEventHandler next;
 
-        //Constructor
-        public CustomFixationDataStream(FormsEyeXHost EyeXHost)
-        {
+        StreamWriter debugWriter;
+        public string varDebug { get; set; }
 
+        //Constructor
+        public CustomFixationDataStream(EyeXHost EyeXHost)
+        {
+            debugWriter = new StreamWriter("debugoutput.csv");
             gazeStream = EyeXHost.CreateGazePointDataStream(GazePointDataMode.LightlyFiltered);
             //Create gate points event handler delegate
             EventHandler<GazePointEventArgs> gazeDel = new EventHandler<GazePointEventArgs>(updateGazeCoodinates);
@@ -177,7 +199,8 @@ namespace GazeToolBar
             xTotal = xTotal - gPAverage.x;
             yTotal = yTotal - gPAverage.y;
 
-
+            varDebug = "xvar: " + xTotal + " " + "yvar: " + yTotal + "\n xav: " + gPAverage.x + " " + "yav: " + gPAverage.y;
+            debugWriter.WriteLine(xTotal + ", " + gPAverage.x + ", " + yTotal + ", " + gPAverage.y);
 
             return new GazePoint(xTotal, yTotal);
 

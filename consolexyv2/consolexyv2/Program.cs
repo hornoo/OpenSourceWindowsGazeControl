@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tobii.EyeX.Framework;
+using GazeToolBar;
 
 namespace consolexyv2
 {
@@ -14,14 +15,22 @@ namespace consolexyv2
         {
             Console.Clear();
             Console.WriteLine("X-Axis {0:0.0} Y-Axis {1:0.0} " , ge.X  , ge.Y);
+            Console.WriteLine(teststream.varDebug);
         }
 
-
+        static CustomFixationDataStream teststream;
 
         static void Main(string[] args)
         {
+
+            
+
             using (var eyeXHost = new EyeXHost())
             {
+
+                 teststream = new CustomFixationDataStream(eyeXHost);
+                
+
                 // Create a data stream: lightly filtered gaze point data.
                 // Other choices of data streams include EyePositionDataStream and FixationDataStream.
                 using (var lightlyFilteredGazeDataStream = eyeXHost.CreateGazePointDataStream(GazePointDataMode.LightlyFiltered))
@@ -52,9 +61,5 @@ namespace consolexyv2
 
         }
 
-        public void displayEyeGaze(object sender, GazePointEventArgs e)
-        {
-            Console.WriteLine(e.X + " " + e.Y);
-        }
     }
 }

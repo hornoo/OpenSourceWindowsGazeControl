@@ -36,10 +36,16 @@ namespace GazeToolBar
         //Fixation variance threshold
         double xFixationThreashold = .9;
         double yFixationThreashold = .3;
+        double yFixationCutOffThreashold = 100;
+
+        double yFixationScreenBoundary;
+        double screenBoudaryCutOffPercent = 15;
 
         //ring buffer arrays.
         double[] xBuffer;
         double[] yBuffer;
+
+
 
         EFixationStreamEventType fixationState;
 
@@ -53,6 +59,8 @@ namespace GazeToolBar
         //Constructor
         public CustomFixationDataStream(FormsEyeXHost EyeXHost)
         {
+
+            yFixationScreenBoundary = ValueNeverChange.PRIMARY_SCREEN.Height * (screenBoudaryCutOffPercent / 100);
 
             gazeStream = EyeXHost.CreateGazePointDataStream(GazePointDataMode.LightlyFiltered);
             //Create gate points event handler delegate
@@ -97,14 +105,16 @@ namespace GazeToolBar
               //Set pointer to next fixation data bucket.
             CustomFixationEventArgs cpe = null;
 
+            double yAdjustedThreashold = gPAverage.y < yFixationScreenBoundary ? yFixationCutOffThreashold : yFixationThreashold;
+
 
               //Check gaze data variation, current state and create appropriate event. Then set the CustomfixationDetectionStreams state.
-            if (fixationState == EFixationStreamEventType.Waiting && gazeVariation.x < xFixationThreashold && gazeVariation.y < yFixationThreashold)
+            if (fixationState == EFixationStreamEventType.Waiting && gazeVariation.x < xFixationThreashold && gazeVariation.y < yAdjustedThreashold)
             {
                 cpe = new CustomFixationEventArgs(EFixationStreamEventType.Start, timestamp, gPAverage.x, gPAverage.y);
                 fixationState = EFixationStreamEventType.Middle;
             }
-            else if (fixationState == EFixationStreamEventType.Middle && gazeVariation.x > xFixationThreashold && gazeVariation.y > yFixationThreashold)
+            else if (fixationState == EFixationStreamEventType.Middle && gazeVariation.x > xFixationThreashold && gazeVariation.y > yAdjustedThreashold)
             {
                 cpe = new CustomFixationEventArgs(EFixationStreamEventType.End, timestamp, gPAverage.x, gPAverage.y);
                 fixationState = EFixationStreamEventType.Waiting;

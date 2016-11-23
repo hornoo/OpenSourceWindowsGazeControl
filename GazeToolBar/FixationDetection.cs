@@ -250,5 +250,11 @@ namespace GazeToolBar
             }
 
         }
+
+
+        public void IsZoomerFixation(bool onOrOff)
+        {
+            customfixStream.ZoomerFixation = onOrOff;
+        }
     }
 }

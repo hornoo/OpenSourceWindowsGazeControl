@@ -85,6 +85,7 @@ namespace GazeToolBar
             SystemFlags.fixationRunning = false;
             SystemFlags.gaze = false;
             SystemFlags.timeOut = false;
+            fixationWorker.IsZoomerFixation(false);
             currentState = SystemState.Wait;
         }
         //The update method is responsible for transitioning from state to state. Once a state is changed the action() method is run
@@ -177,6 +178,7 @@ namespace GazeToolBar
                     }
                     break;
                 case SystemState.Zooming:
+                    fixationWorker.IsZoomerFixation(true);
                     if (SystemFlags.shortCutKeyPressed)//if a user defined click key is pressed
                     {
                         fixationPoint = shortCutKeyWorker.GetXY();
@@ -213,7 +215,7 @@ namespace GazeToolBar
                     break;
                 case SystemState.ZoomWait://waiting for user to fixate
                     if (!SystemFlags.fixationRunning)
-                    {
+                    {                        
                         fixationWorker.StartDetectingFixation();
                         SystemFlags.fixationRunning = true;
                     }

@@ -43,6 +43,8 @@ namespace GazeToolBar
         double yFixationScreenBoundary;
         double screenBoudaryCutOffPercent = 15;
 
+        public bool ZoomerFixation {get; set;}
+
         //ring buffer arrays.
         double[] xBuffer;
         double[] yBuffer;
@@ -76,7 +78,7 @@ namespace GazeToolBar
             yBuffer = new double[bufferSize];
 
             fixationState = EFixationStreamEventType.Waiting;
-
+            ZoomerFixation = false;
         }
 
 
@@ -87,13 +89,11 @@ namespace GazeToolBar
         /// <param name="currentGaze"></param>
         private void updateGazeCoodinates(object o, GazePointEventArgs currentGaze)
         {
-
             addCoordinateToBuffer(currentGaze.X, currentGaze.Y);
 
             gPAverage = average();
 
             generateFixationState(calculateVariance(), currentGaze.Timestamp);
-    
         }
 
 
@@ -109,7 +109,7 @@ namespace GazeToolBar
 
            //check where users gaze is, if it is less than yFixationScreenBoundary set yAdjustedThreashold to yFixationCutOffThreasholdWhenGazeAtTopOfScreen
            //To compensate for EyeX's poor accuracy when gazing near top edge of screen.
-           double yAdjustedThreashold = gPAverage.y < yFixationScreenBoundary ? yFixationCutOffThreasholdWhenGazeAtTopOfScreen : yFixationThreashold;
+           double yAdjustedThreashold = gPAverage.y < yFixationScreenBoundary && !ZoomerFixation ? yFixationCutOffThreasholdWhenGazeAtTopOfScreen : yFixationThreashold;
             
 
               //Check gaze data variation, current state and create appropriate event. Then set the CustomfixationDetectionStreams state.

@@ -99,10 +99,7 @@ namespace GazeToolBar
         public Edge checkEdge()
         {
             Edge edge = Edge.NoEdge;
-
-
-
-            if (this.DesktopLocation.Y < -EDGEOFFSET && this.DesktopLocation.X < -EDGEOFFSET)
+            if (this.DesktopLocation.Y < 0 && this.DesktopLocation.X < 0)
             {
                 return Edge.TopLeft;
             }
@@ -124,6 +121,7 @@ namespace GazeToolBar
             }
             return edge;
         }
+
         //Once a corner is detected this method is used to position the form right up against the corner. This is to prevent the window from moving off-screen
         public void setZoomLensPositionCorner(Corner corner)
         {
@@ -155,7 +153,7 @@ namespace GazeToolBar
                 case Edge.TopLeft:
                     topScreenEdgeOffset = EDGEOFFSET;
                     this.DesktopLocation = new Point(0,  topScreenEdgeOffset);
-                    lensPoint = new Point(this.DesktopLocation.X, this.DesktopLocation.Y - topScreenEdgeOffset);
+                    lensPoint = new Point(calculateLensPointX(fixationPoint.X), calculateLensPointY(fixationPoint.Y));
                     break;
                 case Edge.NoEdge:
                     break;
@@ -195,7 +193,10 @@ namespace GazeToolBar
         {
             int x;
             x = fixationX - (int)((this.Width / ZOOMLEVEL) * 1.25);
+
+
             x = x + this.Size.Width / 4;
+            
             return x;
         }
         private int calculateLensPointY(int fixationY)
@@ -207,29 +208,29 @@ namespace GazeToolBar
         }
         public void SetLensPoint(Point FixationPoint, Edge edge)//determines the location of the zoomed in screenshot
         {
-            switch (edge)
-            {
-                case Edge.NoEdge:
+            //switch (edge)
+            //{
+            //    case Edge.NoEdge:
                     lensPoint.X = calculateLensPointX(FixationPoint.X);
                     lensPoint.Y = calculateLensPointY(FixationPoint.Y);
-                    break;
-                case Edge.Top:
-                    lensPoint.X = calculateLensPointX(FixationPoint.X);
-                    lensPoint.Y = this.DesktopLocation.Y;
-                    break;
-                case Edge.Right:
-                    lensPoint.X = Screen.PrimaryScreen.Bounds.Size.Width - zoomedScreenshot.Width;
-                    lensPoint.Y = calculateLensPointY(FixationPoint.Y);
-                    break;
-                case Edge.Bottom:
-                    lensPoint.X = calculateLensPointX(FixationPoint.X);
-                    lensPoint.Y = Screen.PrimaryScreen.Bounds.Size.Height - zoomedScreenshot.Height;
-                    break;
-                case Edge.Left:
-                    lensPoint.X = this.DesktopLocation.X;
-                    lensPoint.Y = calculateLensPointY(FixationPoint.Y);
-                    break;
-            }
+            //        break;
+            //    case Edge.Top:
+            //        lensPoint.X = calculateLensPointX(FixationPoint.X);
+            //        lensPoint.Y = this.DesktopLocation.Y;
+            //        break;
+            //    case Edge.Right:
+            //        lensPoint.X = Screen.PrimaryScreen.Bounds.Size.Width - zoomedScreenshot.Width;
+            //        lensPoint.Y = calculateLensPointY(FixationPoint.Y);
+            //        break;
+            //    case Edge.Bottom:
+            //        lensPoint.X = calculateLensPointX(FixationPoint.X);
+            //        lensPoint.Y = Screen.PrimaryScreen.Bounds.Size.Height - zoomedScreenshot.Height;
+            //        break;
+            //    case Edge.Left:
+            //        lensPoint.X = this.DesktopLocation.X;
+            //        lensPoint.Y = calculateLensPointY(FixationPoint.Y);
+            //        break;
+            //}
         }
         public void TakeScreenShot()
         {
@@ -284,6 +285,10 @@ namespace GazeToolBar
             {
                 case Edge.NoEdge:
                     return fixationPoint;
+                case Edge.TopLeft:
+                    fixationPoint.X = fixationPoint.X - offset;
+                    fixationPoint.Y = fixationPoint.Y - offset;
+                    break;
                 case Edge.Top:
                     fixationPoint.Y = fixationPoint.Y - offset;
                     break;

@@ -63,34 +63,49 @@ namespace GazeToolBar
         //if the user looked in a corner to returns the appropriate Corner enum or it returns a noCorner enum
         public Corner checkCorners(Point FixationPoint)
         {
-            int maxCornerDistance = zoomedScreenshot.Width + (int)(Screen.PrimaryScreen.Bounds.Height * 0.1);
-            int screenWidth = Screen.FromControl(this).Bounds.Width;
-            int screenHeight = Screen.FromControl(this).Bounds.Height;
+            //int maxCornerDistance = zoomedScreenshot.Width + (int)(Screen.PrimaryScreen.Bounds.Height * 0.1);
+            //int screenWidth = Screen.FromControl(this).Bounds.Width;
+            //int screenHeight = Screen.FromControl(this).Bounds.Height;
 
 
-            //corners as points
-            Point topLeft = new Point(0, 0);
-            Point topRight = new Point(screenWidth, 0);
-            Point bottomLeft = new Point(0, screenHeight);
-            Point bottomRight = new Point(screenWidth, screenHeight);
+            ////corners as points
+            //Point topLeft = new Point(0, 0);
+            //Point topRight = new Point(screenWidth, 0);
+            //Point bottomLeft = new Point(0, screenHeight);
+            //Point bottomRight = new Point(screenWidth, screenHeight);
 
-            Point[] Corners = { topLeft, topRight, bottomLeft, bottomRight };
+            //Point[] Corners = { topLeft, topRight, bottomLeft, bottomRight };
 
-            //checking each corner against maxCornerDistance
-            for (int i = 0; i < Corners.Length; i++)
+            ////checking each corner against maxCornerDistance
+            //for (int i = 0; i < Corners.Length; i++)
+            //{
+            //    if (calculateCornerDistance(FixationPoint, Corners[i]) < maxCornerDistance)
+            //    {
+            //        return (Corner)i;
+            //    }
+            //}
+            //return Corner.NoCorner;
+
+            if (FixationPoint.X < EDGEOFFSET && FixationPoint.Y < EDGEOFFSET)
             {
-                if (calculateCornerDistance(FixationPoint, Corners[i]) < maxCornerDistance)
-                {
-                    return (Corner)i;
-                }
+                return Corner.TopLeft;
             }
+
             return Corner.NoCorner;
+
         }
 
         //This method checks if the user looked near an edge of the screen and returns the appropriate enum
         public Edge checkEdge()
         {
             Edge edge = Edge.NoEdge;
+
+
+
+            if (this.DesktopLocation.Y < -EDGEOFFSET && this.DesktopLocation.X < -EDGEOFFSET)
+            {
+                return Edge.TopLeft;
+            }
             if (this.DesktopLocation.Y < -EDGEOFFSET)//top
             {
                 return Edge.Top;
@@ -137,6 +152,11 @@ namespace GazeToolBar
         {
             switch (edge)
             {
+                case Edge.TopLeft:
+                    topScreenEdgeOffset = EDGEOFFSET;
+                    this.DesktopLocation = new Point(0,  topScreenEdgeOffset);
+                    lensPoint = new Point(this.DesktopLocation.X, this.DesktopLocation.Y - topScreenEdgeOffset);
+                    break;
                 case Edge.NoEdge:
                     break;
                 case Edge.Top:

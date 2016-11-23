@@ -189,7 +189,7 @@ namespace GazeToolBar
                     //zoomLens setup
                     zoomer.determineDesktopLocation(fixationPoint);
                     //checking if the user looked in a corner
-                    //corner = zoomer.checkCorners(fixationPoint);
+                    ////corner = zoomer.checkCorners(fixationPoint);
                     //Checking if a user looked near an edge
                     edge = zoomer.checkEdge();
                     cornerBool = false;

@@ -41,7 +41,7 @@ namespace GazeToolBar
         //these settings work well for 21 inch 1680x1050 res screen
         double yFixationCutOffThreasholdWhenGazeAtTopOfScreen = 100;
         double yFixationScreenBoundary;
-        double screenBoudaryCutOffPercent = 15;
+        
 
         //ring buffer arrays.
         double[] xBuffer;
@@ -62,7 +62,7 @@ namespace GazeToolBar
         public CustomFixationDataStream(FormsEyeXHost EyeXHost)
         {
             //Calculate the amount of pixels away from the top of the screen to set cut of for top of screen threshold adjustment.
-            yFixationScreenBoundary = ValueNeverChange.PRIMARY_SCREEN.Height * (screenBoudaryCutOffPercent / 100);
+            yFixationScreenBoundary = ValueNeverChange.Y_AXIS_TOP_OF_SCREEN_CUT_OFF_BOUNDARY;
 
             gazeStream = EyeXHost.CreateGazePointDataStream(GazePointDataMode.LightlyFiltered);
             //Create gate points event handler delegate

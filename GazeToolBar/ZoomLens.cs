@@ -16,7 +16,9 @@ namespace GazeToolBar
     {
         const int ZOOMLEVEL = 3;// this is controls how far the lens will zoom in
         const int ZOOMLENS_SIZE = 500;//setting the width & height of the ZoomLens
-        const int EDGEOFFSET = 100;
+        int EDGEOFFSET = (int)ValueNeverChange.Y_AXIS_TOP_OF_SCREEN_CUT_OFF_BOUNDARY;
+
+        int topScreenEdgeOffset;
 
         Graphics graphics;
         Graphics offScreenGraphics;
@@ -26,6 +28,8 @@ namespace GazeToolBar
         Point lensPoint;
         FixationDetection fixdet;
         GazeHighlight gazeHighlight;
+
+       
 
         public ZoomLens(FixationDetection FixDet, FormsEyeXHost EyeXHost)
         {
@@ -40,6 +44,7 @@ namespace GazeToolBar
             graphics = Graphics.FromImage(zoomedScreenshot);
             this.FormBorderStyle = FormBorderStyle.None;//removes window borders from form
             fixdet = FixDet;
+            topScreenEdgeOffset = 0;
 
             gazeHighlight = new GazeHighlight(FixDet, offScreenGraphics, EHighlightShaderType.RedToGreen, this);
         }
@@ -81,6 +86,7 @@ namespace GazeToolBar
             }
             return Corner.NoCorner;
         }
+
         //This method checks if the user looked near an edge of the screen and returns the appropriate enum
         public Edge checkEdge()
         {
@@ -134,8 +140,10 @@ namespace GazeToolBar
                 case Edge.NoEdge:
                     break;
                 case Edge.Top:
-                    this.DesktopLocation = new Point(this.DesktopLocation.X, 0);
-                    lensPoint = new Point(calculateLensPointX(fixationPoint.X), this.DesktopLocation.Y);
+                    //Integrate here as well
+                    topScreenEdgeOffset = EDGEOFFSET;
+                    this.DesktopLocation = new Point(this.DesktopLocation.X,  topScreenEdgeOffset);
+                    lensPoint = new Point(calculateLensPointX(fixationPoint.X), this.DesktopLocation.Y - topScreenEdgeOffset);
                     break;
                 case Edge.Right:
                     this.DesktopLocation = new Point(Screen.PrimaryScreen.Bounds.Size.Width - this.Width, this.DesktopLocation.Y);
@@ -234,12 +242,15 @@ namespace GazeToolBar
             int halfWidthDivZoom = halfWidth / ZOOMLEVEL;
 
             int finalY = halfHeight - halfHeightDivZoom;
-            finalY = this.Top + finalY;
+            
+            // ? tidy this up, integrate to work when in top zone of window.
+            finalY = this.Top + finalY - topScreenEdgeOffset;
             returnPoint.Y = finalY + (y / ZOOMLEVEL);
 
             int finalX = halfWidth - halfWidthDivZoom;
             finalX = this.Left + finalX;
             returnPoint.X = finalX + (x / ZOOMLEVEL);
+            topScreenEdgeOffset = 0;
             return returnPoint;
         }
         //This method offsets the final fixation position calculations based on what edge has been detected.

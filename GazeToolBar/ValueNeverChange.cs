@@ -32,6 +32,11 @@ namespace GazeToolBar
         public static readonly Color SettingButtonColor = Color.Black;
         public static readonly Point pnlLocation = new Point(12, 84);
         public const int ONE_HUNDERED = 100;
+        
+        public static readonly double SCREEN_BOUNDARY_CUT_OFF_PERCENT = 10;
+        public static double Y_AXIS_TOP_OF_SCREEN_CUT_OFF_BOUNDARY = PRIMARY_SCREEN.Height * (SCREEN_BOUNDARY_CUT_OFF_PERCENT / 100);
+
+
 
     }
 }

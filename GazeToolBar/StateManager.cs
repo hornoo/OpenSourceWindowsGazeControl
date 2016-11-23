@@ -189,17 +189,18 @@ namespace GazeToolBar
                     //zoomLens setup
                     zoomer.determineDesktopLocation(fixationPoint);
                     //checking if the user looked in a corner
-                    corner = zoomer.checkCorners(fixationPoint);
+                    //corner = zoomer.checkCorners(fixationPoint);
                     //Checking if a user looked near an edge
                     edge = zoomer.checkEdge();
                     cornerBool = false;
                     edgeBool = false;
-                    if (corner != Corner.NoCorner)//if the user looked in a corner
-                    {
-                        zoomer.setZoomLensPositionCorner(corner);//set the lens into the corner
-                        cornerBool = true;
-                    }
-                    else if (edge != Edge.NoEdge)//if there is no corner and the user looked near the edge of the screen
+                    //if (corner != Corner.NoCorner)//if the user looked in a corner
+                    //{
+                    //    zoomer.setZoomLensPositionCorner(corner);//set the lens into the corner
+                    //    cornerBool = true;
+                    //}
+                    //else 
+                    if (edge != Edge.NoEdge)//if there is no corner and the user looked near the edge of the screen
                     {
                         zoomer.setZoomLensPositionEdge(edge, fixationPoint);//set lens to edge
                         edgeBool = true;

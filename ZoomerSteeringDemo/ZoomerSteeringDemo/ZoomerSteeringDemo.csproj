@@ -48,6 +48,7 @@
     <Reference Include="Tobii.EyeX.Client.Net20">
       <HintPath>..\..\lib\x64\Tobii.EyeX.Client.Net20.dll</HintPath>
     </Reference>
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Form1.cs">

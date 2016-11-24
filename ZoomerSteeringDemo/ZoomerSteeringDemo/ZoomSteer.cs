@@ -13,6 +13,7 @@ namespace ZoomerSteeringDemo
 {
 
     // Struct that is used to define the bounds of the dead zone(zone where when users is looking there is no scrolling input to the current window that has focus.
+   
     public struct NoScollRect
     {
         public int LeftBound, RightBound, TopBound, BottomBound;
@@ -45,8 +46,6 @@ namespace ZoomerSteeringDemo
 
             gazeStream = eyeX.CreateGazePointDataStream(GazePointDataMode.LightlyFiltered);
 
-            
-
             GazeDirection = new Vector(0, 0);
         }
 
@@ -67,6 +66,7 @@ namespace ZoomerSteeringDemo
         private void updateGazeCoodinates(object o, GazePointEventArgs currentGaze)
         {
             GazeDirection = CalculateZoomDirection(currentGaze.X, currentGaze.Y);
+            Console.WriteLine(currentGaze.ToString());
         }
 
 
@@ -77,24 +77,24 @@ namespace ZoomerSteeringDemo
 
             if(xGaze > deadZoneRect.RightBound)
             {
-                xAcceleration += 1;
+                xAcceleration -= 1;
             }
 
 
             if(xGaze < deadZoneRect.LeftBound)
             {
-                xAcceleration -= 1;
+                xAcceleration += 1;
             }
 
 
             if(yGaze > deadZoneRect.BottomBound)
             {
-                yAcceleration += 1;
+                yAcceleration -= 1;
             }
 
-            if(yAcceleration < deadZoneRect.TopBound)
+            if(yGaze < deadZoneRect.TopBound)
             {
-                yAcceleration -= 1;
+                yAcceleration += 1;
             }
 
             return new Vector(xAcceleration, yAcceleration);

@@ -26,6 +26,9 @@ namespace ZoomerSteeringDemo
 
         ZoomSteer zoomXYMover;
 
+        Pen testpen;
+        Point startLocation; 
+
         public Form1()
         {
             InitializeComponent();
@@ -39,8 +42,12 @@ namespace ZoomerSteeringDemo
             wholeScreenShot = new Bitmap(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
             screenShot = Graphics.FromImage(wholeScreenShot);
             EyeXHost eyex = new EyeXHost();
-            zoomXYMover = new ZoomSteer(eyex, panel1.Size, 10);
+            eyex.Start();
+            
+            zoomXYMover = new ZoomSteer(eyex, panel1.Size, 50);
 
+            startLocation = new Point(panel1.Location.X, panel1.Location.Y);
+            testpen = new Pen(Color.Red);
         }
 
         private void takeScreenShot()
@@ -52,9 +59,13 @@ namespace ZoomerSteeringDemo
         private void button1_Click(object sender, EventArgs e)
         {
             takeScreenShot();
-            drawLocation = new Point(500,500);
-
+            drawLocation = new Point(0,0);
             mainCanvas.DrawImage(wholeScreenShot, drawLocation);
+
+            
+
+            zoomXYMover.Start(startLocation);
+            timer1.Start();
         }
 
 
@@ -64,6 +75,9 @@ namespace ZoomerSteeringDemo
         private void timer1_Tick(object sender, EventArgs e)
         {
 
+            drawLocation = new Point(drawLocation.X + (int)zoomXYMover.GazeDirection.X, drawLocation.Y + (int)zoomXYMover.GazeDirection.Y);
+            mainCanvas.DrawImage(wholeScreenShot, drawLocation);
+            mainCanvas.DrawRectangle(testpen, startLocation.X, startLocation.Y, 1, 1);
         }
     }
 }

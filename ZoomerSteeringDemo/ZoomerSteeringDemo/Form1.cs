@@ -27,7 +27,10 @@ namespace ZoomerSteeringDemo
         ZoomSteer zoomXYMover;
 
         Pen testpen;
-        Point startLocation; 
+        Point startLocation;
+        SizeF zoomAmount;
+
+        float zoomScalar = 0.001f;
 
         public Form1()
         {
@@ -44,9 +47,13 @@ namespace ZoomerSteeringDemo
             EyeXHost eyex = new EyeXHost();
             eyex.Start();
             
-            zoomXYMover = new ZoomSteer(eyex, panel1.Size, 50);
+            zoomXYMover = new ZoomSteer(eyex, panel1.Size, 15);
 
-            startLocation = new Point(panel1.Location.X, panel1.Location.Y);
+
+
+            //startLocation = new Point(panel1.Location.X, panel1.Location.Y);
+
+            startLocation = this.PointToScreen(new Point(panel1.Location.X, panel1.Location.Y));
             testpen = new Pen(Color.Red);
         }
 
@@ -59,10 +66,14 @@ namespace ZoomerSteeringDemo
         private void button1_Click(object sender, EventArgs e)
         {
             takeScreenShot();
+
+            zoomAmount = new SizeF(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
+            
             drawLocation = new Point(0,0);
+
+
             mainCanvas.DrawImage(wholeScreenShot, drawLocation);
 
-            
 
             zoomXYMover.Start(startLocation);
             timer1.Start();
@@ -74,10 +85,50 @@ namespace ZoomerSteeringDemo
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+           
 
-            drawLocation = new Point(drawLocation.X + (int)zoomXYMover.GazeDirection.X, drawLocation.Y + (int)zoomXYMover.GazeDirection.Y);
-            mainCanvas.DrawImage(wholeScreenShot, drawLocation);
+            
+           // drawLocation = new Point(drawLocation.X + (int)zoomXYMover.GazeDirection.X, drawLocation.Y + (int)zoomXYMover.GazeDirection.Y);
+           
+            
+            offScreenCanvas.Clear(Color.White);
+            offScreenCanvas.DrawImage(wholeScreenShot, drawLocation.X, drawLocation.Y, zoomAmount.Width, zoomAmount.Height);
+            mainCanvas.DrawImage(offScreenBitMap, 0, 0);
+           
             mainCanvas.DrawRectangle(testpen, startLocation.X, startLocation.Y, 1, 1);
+
+
+            float xExpansionAmount = zoomAmount.Width * zoomScalar;
+            float yExpansionAmount = zoomAmount.Height * zoomScalar;
+
+            zoomAmount.Width = zoomAmount.Width + xExpansionAmount;
+            zoomAmount.Height = zoomAmount.Height + yExpansionAmount;
+
+            if (zoomXYMover.GazeDirection.X != 0 || zoomXYMover.GazeDirection.Y != 0)
+            {
+                
+                
+                int xDirection = 0;
+                int yDirection = 0;
+
+                if (zoomXYMover.GazeDirection.X < 0)
+                {
+                    xDirection = (int)((float)zoomXYMover.GazeDirection.X - xExpansionAmount);
+                }else
+                {
+                    xDirection = (int)((float)zoomXYMover.GazeDirection.X + xExpansionAmount);
+                }
+
+                if (zoomXYMover.GazeDirection.Y < 0)
+                {
+                    yDirection = (int)((float)zoomXYMover.GazeDirection.Y - yExpansionAmount);
+                }else
+                {
+                    yDirection = (int)((float)zoomXYMover.GazeDirection.Y + yExpansionAmount);
+                }
+                
+                drawLocation = new Point(drawLocation.X + xDirection, drawLocation.Y + yDirection);
+            }
         }
     }
 }

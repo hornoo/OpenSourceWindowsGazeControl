@@ -47,7 +47,7 @@ namespace ZoomerSteeringDemo
             EyeXHost eyex = new EyeXHost();
             eyex.Start();
             
-            zoomXYMover = new ZoomSteer(eyex, panel1.Size, 15);
+            zoomXYMover = new ZoomSteer(eyex, panel1.Size, 20);
 
 
 
@@ -88,15 +88,18 @@ namespace ZoomerSteeringDemo
            
 
             
-           // drawLocation = new Point(drawLocation.X + (int)zoomXYMover.GazeDirection.X, drawLocation.Y + (int)zoomXYMover.GazeDirection.Y);
+            //drawLocation = new Point(drawLocation.X + (int)zoomXYMover.GazeDirection.X , drawLocation.Y + (int)zoomXYMover.GazeDirection.Y  );
            
-            
+            //drawLocation = new Point(drawLocation.X , drawLocation.Y);
+
             offScreenCanvas.Clear(Color.White);
             offScreenCanvas.DrawImage(wholeScreenShot, drawLocation.X, drawLocation.Y, zoomAmount.Width, zoomAmount.Height);
             mainCanvas.DrawImage(offScreenBitMap, 0, 0);
            
-            mainCanvas.DrawRectangle(testpen, startLocation.X, startLocation.Y, 1, 1);
+            //mainCanvas.DrawRectangle(testpen, startLocation.X, startLocation.Y, 1, 1);
 
+            //zoomAmount.Width = zoomAmount.Width  +6;
+            //zoomAmount.Height = zoomAmount.Height  +6;
 
             float xExpansionAmount = zoomAmount.Width * zoomScalar;
             float yExpansionAmount = zoomAmount.Height * zoomScalar;
@@ -104,31 +107,31 @@ namespace ZoomerSteeringDemo
             zoomAmount.Width = zoomAmount.Width + xExpansionAmount;
             zoomAmount.Height = zoomAmount.Height + yExpansionAmount;
 
-            if (zoomXYMover.GazeDirection.X != 0 || zoomXYMover.GazeDirection.Y != 0)
-            {
-                
-                
-                int xDirection = 0;
-                int yDirection = 0;
+            drawLocation = new Point(drawLocation.X + -(int)xExpansionAmount/2, drawLocation.Y + -(int)yExpansionAmount/2);
 
-                if (zoomXYMover.GazeDirection.X < 0)
-                {
-                    xDirection = (int)((float)zoomXYMover.GazeDirection.X - xExpansionAmount);
-                }else
-                {
-                    xDirection = (int)((float)zoomXYMover.GazeDirection.X + xExpansionAmount);
-                }
+            //    int xDirection = 0;
+            //    int yDirection = 0;
 
-                if (zoomXYMover.GazeDirection.Y < 0)
-                {
-                    yDirection = (int)((float)zoomXYMover.GazeDirection.Y - yExpansionAmount);
-                }else
-                {
-                    yDirection = (int)((float)zoomXYMover.GazeDirection.Y + yExpansionAmount);
-                }
-                
-                drawLocation = new Point(drawLocation.X + xDirection, drawLocation.Y + yDirection);
-            }
+            //    if (zoomXYMover.GazeDirection.X < 0)
+            //    {
+            //        xDirection = (int)((float)zoomXYMover.GazeDirection.X - xExpansionAmount);
+            //    }
+            //    else
+            //    {
+            //        xDirection = (int)((float)zoomXYMover.GazeDirection.X + xExpansionAmount);
+            //    }
+
+            //    if (zoomXYMover.GazeDirection.Y < 0)
+            //    {
+            //        yDirection = (int)((float)zoomXYMover.GazeDirection.Y - yExpansionAmount);
+            //    }
+            //    else
+            //    {
+            //        yDirection = (int)((float)zoomXYMover.GazeDirection.Y + yExpansionAmount);
+            //    }
+
+            //    drawLocation = new Point(drawLocation.X + xDirection, drawLocation.Y + yDirection);
+            
         }
     }
 }

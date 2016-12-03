@@ -16,9 +16,9 @@ namespace ZoomerSteeringDemo
    
     public struct NoScollRect
     {
-        public int LeftBound, RightBound, TopBound, BottomBound;
+        public float LeftBound, RightBound, TopBound, BottomBound;
 
-        public NoScollRect(int leftBound, int rightBound, int topBound, int bottomBound)
+        public NoScollRect(float leftBound, float rightBound, float topBound, float bottomBound)
         {
             LeftBound = leftBound;
             RightBound = rightBound;
@@ -35,7 +35,7 @@ namespace ZoomerSteeringDemo
         NoScollRect deadZoneRect;
         int deadZonePercent;
         public Vector GazeDirection { get; set; }
-        System.Drawing.Point windowlocation;
+        System.Drawing.PointF windowlocation;
 
 
         public ZoomSteer(EyeXFramework.EyeXHost eyeX, System.Drawing.Size DisplayImageSize, int DeadZonePercent)
@@ -50,7 +50,7 @@ namespace ZoomerSteeringDemo
         }
 
 
-        public void Start(System.Drawing.Point Windowlocation)
+        public void Start(System.Drawing.PointF Windowlocation)
         {
             windowlocation = Windowlocation;
             setDeadZoneBounds();
@@ -107,16 +107,16 @@ namespace ZoomerSteeringDemo
             //Work out bounds of deadZoneRect rectangle ie place where no scrolling happens when the user is looking there.
 
             //Find Center of each axis
-            int screenHolizontalCenter = windowlocation.X + (displayImageSize.Width / 2);
-            int screenVerticalCenter = windowlocation.Y + (displayImageSize.Height / 2);
+            float screenHolizontalCenter = windowlocation.X + (displayImageSize.Width / 2);
+            float screenVerticalCenter = windowlocation.Y + (displayImageSize.Height / 2);
 
             //work out how many pixels the deadZone is on each axis
-            int deadZoneWidth = (int)(((double)deadZonePercent / 100) * displayImageSize.Width);
-            int deadZoneHeight = (int)(((double)deadZonePercent / 100) * displayImageSize.Height);
+            float deadZoneWidth = ((deadZonePercent / 100) * displayImageSize.Width);
+            float deadZoneHeight = ((deadZonePercent / 100) * displayImageSize.Height);
 
             //half this amount.
-            int halfDeadZoneWidth = deadZoneWidth / 2;
-            int halfDeadZoneHeight = deadZoneHeight / 2;
+            float halfDeadZoneWidth = deadZoneWidth / 2;
+            float halfDeadZoneHeight = deadZoneHeight / 2;
 
             //Set deaZone bounds from center of each axis
             deadZoneRect.LeftBound = screenHolizontalCenter - halfDeadZoneWidth;

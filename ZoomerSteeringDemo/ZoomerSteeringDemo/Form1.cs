@@ -123,9 +123,7 @@ namespace ZoomerSteeringDemo
             zoomAmount = this.Size;
             drawLocation = new Point(0, 0);
 
-
             mainCanvas.DrawImage(wholeScreenShot, drawLocation);
-
 
             zoomXYMover.Start(this.Location);
             timer1.Start();

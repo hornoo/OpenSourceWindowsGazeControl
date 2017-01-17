@@ -29,6 +29,7 @@ namespace ZoomerSteeringDemo
         Pen testpen;
         PointF startLocation;
         SizeF zoomAmount;
+        SizeF zoomImageCenter;
 
         float zoomScalar = 0.01f;
 
@@ -42,8 +43,8 @@ namespace ZoomerSteeringDemo
             mainCanvas = this.CreateGraphics();
             offScreenBitMap = new Bitmap(this.Width, this.Height);
             offScreenCanvas = Graphics.FromImage(offScreenBitMap);
-            //wholeScreenShot = new Bitmap(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
-            wholeScreenShot = new Bitmap( this.Width, this.Height);
+            wholeScreenShot = new Bitmap(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
+            //wholeScreenShot = new Bitmap( this.Width, this.Height);
             screenShot = Graphics.FromImage(wholeScreenShot);
             EyeXHost eyex = new EyeXHost();
             eyex.Start();
@@ -63,8 +64,11 @@ namespace ZoomerSteeringDemo
         private void takeScreenShot()
         {
              
-            //screenShot.CopyFromScreen(0, 0, 0, 0, Screen.PrimaryScreen.Bounds.Size, CopyPixelOperation.SourceCopy);
-            screenShot.CopyFromScreen(0, 0, 0, 0, this.Size, CopyPixelOperation.SourceCopy);
+            screenShot.CopyFromScreen(0, 0, 0, 0, Screen.PrimaryScreen.Bounds.Size, CopyPixelOperation.SourceCopy);
+            //screenShot.CopyFromScreen(0, 0, 0, 0, this.Size, CopyPixelOperation.SourceCopy);
+           
+            //Set this value later on to be what ever the image zoom location is plus half the size of the zoom window.
+           
         }
 
 
@@ -82,10 +86,20 @@ namespace ZoomerSteeringDemo
             float xExpansionAmount = zoomAmount.Width * zoomScalar;
             float yExpansionAmount = zoomAmount.Height * zoomScalar;
 
+            float xNewPositionAmount = 150 * zoomScalar;
+            float yNewPositionAmount = 150 * zoomScalar;
+
+            //May have to set up logic here, to move image acording to direction of zoom..
+            zoomImageCenter.Width = zoomImageCenter.Width + xNewPositionAmount;
+            zoomImageCenter.Height = zoomImageCenter.Height + yNewPositionAmount;
+
             zoomAmount.Width = zoomAmount.Width + xExpansionAmount;
             zoomAmount.Height = zoomAmount.Height + yExpansionAmount;
 
-            drawLocation = new PointF(drawLocation.X + -xExpansionAmount/2, drawLocation.Y + -yExpansionAmount/2);
+
+
+
+            drawLocation = new PointF(drawLocation.X - yNewPositionAmount, drawLocation.Y - yNewPositionAmount);
             offScreenCanvas.Clear(Color.White);
             offScreenCanvas.DrawImage(wholeScreenShot, drawLocation.X, drawLocation.Y, zoomAmount.Width, zoomAmount.Height);
             mainCanvas.DrawImage(offScreenBitMap, 0, 0);
@@ -119,9 +133,11 @@ namespace ZoomerSteeringDemo
         {
             takeScreenShot();
 
-            //zoomAmount = new SizeF(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
-            zoomAmount = this.Size;
-            drawLocation = new Point(0, 0);
+            zoomAmount = new SizeF(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
+            
+            drawLocation = new Point(150, 150);
+            zoomImageCenter.Height =  drawLocation.Y + 150;
+            zoomImageCenter.Width = drawLocation.Y + 150;
 
             mainCanvas.DrawImage(wholeScreenShot, drawLocation);
 

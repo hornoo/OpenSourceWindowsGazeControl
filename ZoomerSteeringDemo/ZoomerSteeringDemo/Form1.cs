@@ -27,11 +27,15 @@ namespace ZoomerSteeringDemo
         ZoomSteer zoomXYMover;
 
         Pen testpen;
-        PointF startLocation;
+
         SizeF zoomAmount;
         SizeF zoomImageCenter;
 
         float zoomScalar = 0.01f;
+
+
+        Point startLocation = new Point(450, 450);
+        Point imageCenterOffset = new Point(150, 150);
 
         public Form1()
         {
@@ -51,12 +55,13 @@ namespace ZoomerSteeringDemo
             
             zoomXYMover = new ZoomSteer(eyex, this.Size, 20);
 
-            this.Location = new Point(300, 300);
+            this.Location = new Point(400, 0);
+
 
 
             //startLocation = new Point(panel1.Location.X, panel1.Location.Y);
 
-            startLocation = this.PointToScreen(new Point(this.Location.X, this.Location.Y));
+           // startLocation = this.PointToScreen(new Point(this.Location.X, this.Location.Y));
             //startLocation = new Point(0, 0);
             testpen = new Pen(Color.Red);
         }
@@ -86,10 +91,10 @@ namespace ZoomerSteeringDemo
             float xExpansionAmount = zoomAmount.Width * zoomScalar;
             float yExpansionAmount = zoomAmount.Height * zoomScalar;
 
-            float xNewPositionAmount = 150 * zoomScalar;
-            float yNewPositionAmount = 150 * zoomScalar;
+            float xNewPositionAmount = startLocation.X * zoomScalar;
+            float yNewPositionAmount = startLocation.Y * zoomScalar;
 
-            //May have to set up logic here, to move image acording to direction of zoom..
+            //May have to set up logic here, to move image according to direction of zoom..
             zoomImageCenter.Width = zoomImageCenter.Width + xNewPositionAmount;
             zoomImageCenter.Height = zoomImageCenter.Height + yNewPositionAmount;
 
@@ -134,10 +139,10 @@ namespace ZoomerSteeringDemo
             takeScreenShot();
 
             zoomAmount = new SizeF(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
-            
-            drawLocation = new Point(150, 150);
+
+            drawLocation = new PointF(imageCenterOffset.X - startLocation.X, imageCenterOffset.Y - startLocation.Y);
             zoomImageCenter.Height =  drawLocation.Y + 150;
-            zoomImageCenter.Width = drawLocation.Y + 150;
+           zoomImageCenter.Width = drawLocation.Y + 150;
 
             mainCanvas.DrawImage(wholeScreenShot, drawLocation);
 

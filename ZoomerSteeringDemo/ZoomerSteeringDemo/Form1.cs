@@ -12,10 +12,13 @@ using Tobii.EyeX.Framework;
 using Tobii.EyeX.Client;
 using EyeXFramework;
 
+using RamGecTools;
+
 namespace ZoomerSteeringDemo
 {
     public partial class Form1 : Form
     {
+        MouseHook globalMousehook;
         Graphics mainCanvas;
         Graphics offScreenCanvas;
         Graphics screenShot;
@@ -44,6 +47,9 @@ namespace ZoomerSteeringDemo
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            globalMousehook = new MouseHook();
+            globalMousehook.LeftButtonDown += new MouseHook.MouseHookCallback(StartZoomAtLocation);
+            globalMousehook.Install();
             mainCanvas = this.CreateGraphics();
             offScreenBitMap = new Bitmap(this.Width, this.Height);
             offScreenCanvas = Graphics.FromImage(offScreenBitMap);
@@ -59,11 +65,17 @@ namespace ZoomerSteeringDemo
 
 
 
+
             //startLocation = new Point(panel1.Location.X, panel1.Location.Y);
 
            // startLocation = this.PointToScreen(new Point(this.Location.X, this.Location.Y));
             //startLocation = new Point(0, 0);
             testpen = new Pen(Color.Red);
+        }
+
+        void globalMousehook_LeftButtonDown(MouseHook.MSLLHOOKSTRUCT mouseStruct)
+        {
+            throw new NotImplementedException();
         }
 
         private void takeScreenShot()
@@ -146,8 +158,39 @@ namespace ZoomerSteeringDemo
 
             mainCanvas.DrawImage(wholeScreenShot, drawLocation);
 
+            
+
             zoomXYMover.Start(this.Location);
             timer1.Start();
         }
+
+        private void StartZoomAtLocation(MouseHook.MSLLHOOKSTRUCT e)
+        {
+            timer1.Stop();
+
+            ImageCenter = new PointF(e.pt.x,e.pt.y);
+
+            takeScreenShot();
+
+            zoomAmount = new SizeF(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
+
+            drawLocation = new PointF(imageCenterOffset.X - ImageCenter.X, imageCenterOffset.Y - ImageCenter.Y);
+            zoomImageCenter.Height = drawLocation.Y + 150;
+            zoomImageCenter.Width = drawLocation.Y + 150;
+
+            mainCanvas.DrawImage(wholeScreenShot, drawLocation);
+
+
+
+            zoomXYMover.Start(this.Location);
+            timer1.Start();
+
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            globalMousehook.Uninstall();
+        }
+
     }
 }

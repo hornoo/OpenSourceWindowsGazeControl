@@ -34,8 +34,8 @@ namespace ZoomerSteeringDemo
         float zoomScalar = 0.01f;
 
 
-        Point startLocation = new Point(450, 450);
-        Point imageCenterOffset = new Point(150, 150);
+        PointF ImageCenter = new Point(300, 300);
+        PointF imageCenterOffset = new Point(150, 150);
 
         public Form1()
         {
@@ -91,12 +91,12 @@ namespace ZoomerSteeringDemo
             float xExpansionAmount = zoomAmount.Width * zoomScalar;
             float yExpansionAmount = zoomAmount.Height * zoomScalar;
 
-            float xNewPositionAmount = startLocation.X * zoomScalar;
-            float yNewPositionAmount = startLocation.Y * zoomScalar;
-
+            float xNewPositionAmount = ImageCenter.X * zoomScalar;
+            float yNewPositionAmount = ImageCenter.Y * zoomScalar;
+            ImageCenter.X += xNewPositionAmount;
+            ImageCenter.Y += yNewPositionAmount;
             //May have to set up logic here, to move image according to direction of zoom..
-            zoomImageCenter.Width = zoomImageCenter.Width + xNewPositionAmount;
-            zoomImageCenter.Height = zoomImageCenter.Height + yNewPositionAmount;
+
 
             zoomAmount.Width = zoomAmount.Width + xExpansionAmount;
             zoomAmount.Height = zoomAmount.Height + yExpansionAmount;
@@ -140,7 +140,7 @@ namespace ZoomerSteeringDemo
 
             zoomAmount = new SizeF(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
 
-            drawLocation = new PointF(imageCenterOffset.X - startLocation.X, imageCenterOffset.Y - startLocation.Y);
+            drawLocation = new PointF(imageCenterOffset.X - ImageCenter.X, imageCenterOffset.Y - ImageCenter.Y);
             zoomImageCenter.Height =  drawLocation.Y + 150;
            zoomImageCenter.Width = drawLocation.Y + 150;
 

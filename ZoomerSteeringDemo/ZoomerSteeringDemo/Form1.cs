@@ -103,7 +103,15 @@ namespace ZoomerSteeringDemo
             float xExpansionAmount = zoomAmount.Width * zoomScalar;
             float yExpansionAmount = zoomAmount.Height * zoomScalar;
 
-            float xNewPositionAmount = ImageCenter.X * zoomScalar;
+            float xNewPositionAmount = 0;
+            //if (drawLocation.X > 0)
+            //{
+            //    xNewPositionAmount = (150 + ImageCenter.X) * zoomScalar;
+            //}
+            //else
+            //{
+                xNewPositionAmount = ImageCenter.X * zoomScalar;
+            //}
             float yNewPositionAmount = ImageCenter.Y * zoomScalar;
             ImageCenter.X += xNewPositionAmount;
             ImageCenter.Y += yNewPositionAmount;
@@ -116,7 +124,7 @@ namespace ZoomerSteeringDemo
 
 
 
-            drawLocation = new PointF(drawLocation.X - yNewPositionAmount, drawLocation.Y - yNewPositionAmount);
+            drawLocation = new PointF(drawLocation.X - xNewPositionAmount, drawLocation.Y - yNewPositionAmount);
             offScreenCanvas.Clear(Color.White);
             offScreenCanvas.DrawImage(wholeScreenShot, drawLocation.X, drawLocation.Y, zoomAmount.Width, zoomAmount.Height);
             mainCanvas.DrawImage(offScreenBitMap, 0, 0);
@@ -167,6 +175,7 @@ namespace ZoomerSteeringDemo
         private void StartZoomAtLocation(MouseHook.MSLLHOOKSTRUCT e)
         {
             timer1.Stop();
+            //globalMousehook.Uninstall();
 
             ImageCenter = new PointF(e.pt.x,e.pt.y);
 

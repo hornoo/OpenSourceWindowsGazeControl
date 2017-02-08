@@ -62,7 +62,6 @@ namespace ZoomerSteeringDemo
             gazeStream.Next -= updateGazeCoodinates;
         }
 
-
         private void updateGazeCoodinates(object o, GazePointEventArgs currentGaze)
         {
             GazeDirection = CalculateZoomDirection(currentGaze.X, currentGaze.Y);

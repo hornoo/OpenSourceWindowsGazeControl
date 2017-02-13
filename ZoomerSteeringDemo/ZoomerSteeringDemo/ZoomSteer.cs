@@ -32,8 +32,8 @@ namespace ZoomerSteeringDemo
 
         GazePointDataStream gazeStream;
         System.Drawing.Size displayImageSize;
-        NoScollRect deadZoneRect;
-        int deadZonePercent;
+        public NoScollRect deadZoneRect;
+        float deadZonePercent;
         public Vector GazeDirection { get; set; }
         System.Drawing.PointF windowlocation;
 
@@ -65,7 +65,7 @@ namespace ZoomerSteeringDemo
         private void updateGazeCoodinates(object o, GazePointEventArgs currentGaze)
         {
             GazeDirection = CalculateZoomDirection(currentGaze.X, currentGaze.Y);
-            Console.WriteLine(currentGaze.ToString());
+           // Console.WriteLine(currentGaze.ToString());
         }
 
 

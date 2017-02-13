@@ -24,6 +24,8 @@ namespace ZoomerSteeringDemo
         Graphics screenShot;
         Bitmap offScreenBitMap;
         Bitmap wholeScreenShot;
+        Pen testpen;
+        int moveaAmout;
 
         PointF drawLocation;
 
@@ -61,10 +63,13 @@ namespace ZoomerSteeringDemo
             EyeXHost eyex = new EyeXHost();
             eyex.Start();
             
-            zoomXYMover = new ZoomSteer(eyex, this.Size, 70);
+            zoomXYMover = new ZoomSteer(eyex, this.Size, 15);
 
             //This will gt passed in from screen fixation
-            this.Location = new Point(400, 300);
+            this.Location = new Point(800, 300);
+            moveaAmout = 1;
+
+            testpen = new Pen(Color.Red);
 
         }
 
@@ -84,21 +89,23 @@ namespace ZoomerSteeringDemo
 
                 if (zoomXYMover.GazeDirection.X < 0)
                 {
-                    xDirection = -1;
+                    xDirection = -moveaAmout;
                 }
-                else
+                else if(zoomXYMover.GazeDirection.X > 0)
                 {
-                    xDirection = 1;
+                    xDirection = moveaAmout;
                 }
 
                 if (zoomXYMover.GazeDirection.Y < 0)
                 {
-                    yDirection = -1;
+                    yDirection = -moveaAmout;
                 }
-                else
+                else if (zoomXYMover.GazeDirection.Y > 0)
                 {
-                    yDirection = 1;
+                    yDirection = moveaAmout;
                 }
+
+                Console.WriteLine("X " + xDirection + " Y " + yDirection);
 
                 drawLocation = new PointF(drawLocation.X + xDirection, drawLocation.Y + yDirection);
 
@@ -119,34 +126,16 @@ namespace ZoomerSteeringDemo
             zoomAmount.Height = zoomAmount.Height + yExpansionAmount;
 
             drawLocation = new PointF(drawLocation.X - xNewPositionAmount, drawLocation.Y - yNewPositionAmount);
+            //Console.WriteLine(drawLocation);
             }
 
             offScreenCanvas.Clear(Color.White);
             offScreenCanvas.DrawImage(wholeScreenShot, drawLocation.X, drawLocation.Y, zoomAmount.Width, zoomAmount.Height);
+
+            DrawBounds(zoomXYMover.deadZoneRect);
+
             mainCanvas.DrawImage(offScreenBitMap, 0, 0);
 
-            //    int xDirection = 0;
-            //    int yDirection = 0;
-
-            //    if (zoomXYMover.GazeDirection.X < 0)
-            //    {
-            //        xDirection = (int)((float)zoomXYMover.GazeDirection.X - xExpansionAmount);
-            //    }
-            //    else
-            //    {
-            //        xDirection = (int)((float)zoomXYMover.GazeDirection.X + xExpansionAmount);
-            //    }
-
-            //    if (zoomXYMover.GazeDirection.Y < 0)
-            //    {
-            //        yDirection = (int)((float)zoomXYMover.GazeDirection.Y - yExpansionAmount);
-            //    }
-            //    else
-            //    {
-            //        yDirection = (int)((float)zoomXYMover.GazeDirection.Y + yExpansionAmount);
-            //    }
-
-            //    drawLocation = new Point(drawLocation.X + xDirection, drawLocation.Y + yDirection);
             
         }
 
@@ -193,6 +182,11 @@ namespace ZoomerSteeringDemo
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             globalMousehook.Uninstall();
+        }
+
+        private void DrawBounds(NoScollRect inputRect)
+        {
+            offScreenCanvas.DrawLine(testpen, inputRect.LeftBound, inputRect.TopBound, inputRect.RightBound, inputRect.TopBound);
         }
 
     }
